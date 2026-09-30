@@ -1,0 +1,565 @@
+{
+  "version": "1.0.0",
+  "business": {
+    "name": "Nick's Real Estate Business",
+    "market": "Central Louisiana (Cenla)",
+    "principle": "AI agents draft, research, track, and recommend. Nick decides, signs, and sends. Anything client-facing, contractual, or financial is approved by Nick before it leaves the building."
+  },
+  "owner": {
+    "id": "nick",
+    "name": "Nick",
+    "title": "Owner / Broker Agent",
+    "emoji": "👑",
+    "color": "#FFD60A",
+    "mission": "Own the client relationship, make every final decision, and be the only human signature in the system.",
+    "duties": [
+      "Approve or reject every recommendation that touches a client, a contract, or money",
+      "Set quarterly goals and priorities for the CEO to execute",
+      "Handle in-person showings, listing appointments, negotiations, and closings",
+      "Review the daily brief and weekly scorecard from the CEO",
+      "Escalation endpoint for the whole organization"
+    ],
+    "kpis": ["Closed transactions per month", "Gross commission income", "Hours spent on admin work (target: falling)"]
+  },
+  "executive": {
+    "id": "ceo",
+    "name": "ChatGPT CEO + Chief of Staff",
+    "platform": "ChatGPT",
+    "emoji": "🎯",
+    "color": "#10A37F",
+    "mission": "Run the company day to day for Nick: set priorities, route work to the right department, and keep the whole operation on one page.",
+    "duties": [
+      "Turn Nick's goals into a weekly plan with owners and deadlines",
+      "Route incoming work to the correct department head and track it to completion",
+      "Compile the daily brief (what is due, what is stuck, what needs Nick's decision)",
+      "Compile the weekly scorecard from CFO / BI and Argus",
+      "Resolve conflicts between departments and escalate only true decisions to Nick",
+      "Maintain the standard operating procedures every agent follows"
+    ],
+    "inputs": ["Nick's goals and decisions", "Argus alerts and dashboards", "Department status reports"],
+    "outputs": ["Daily brief", "Weekly scorecard", "Prioritized task list per department", "Decision requests for Nick"],
+    "kpis": ["Decisions waiting on Nick older than 24h (target: 0)", "Tasks completed on time", "Weekly scorecard delivered every Monday"],
+    "escalatesTo": "nick"
+  },
+  "pillars": [
+    {
+      "id": "grok",
+      "name": "Grok Workforce",
+      "platform": "Grok",
+      "emoji": "⚙️",
+      "color": "#FF9500",
+      "mission": "The operating departments. Every specialist agent that does the day-to-day work lives here, organized under five department heads.",
+      "reportsTo": "ceo",
+      "departmentIds": ["operations", "growth", "marketing", "finance", "intelligence"]
+    },
+    {
+      "id": "argus",
+      "name": "Argus Command Center",
+      "platform": "Argus",
+      "emoji": "🛰️",
+      "color": "#30B0C7",
+      "mission": "The eyes of the business. Watches every pipeline, deadline, and number, and raises the alarm before something is missed.",
+      "reportsTo": "ceo",
+      "duties": [
+        "Monitor the lead pipeline, transaction deadlines, and follow-up queue in real time",
+        "Fire alerts for overdue follow-ups, approaching contract deadlines, and stalled deals",
+        "Serve the dashboards the CEO uses for the daily brief and weekly scorecard",
+        "Log every agent action so any decision can be traced back",
+        "Detect anomalies: lead volume drops, response-time spikes, missing documents"
+      ],
+      "inputs": ["Lead Tracker data", "Transaction calendars", "Department reports"],
+      "outputs": ["Alerts", "Dashboards", "Audit log"],
+      "kpis": ["Missed deadlines (target: 0)", "Alert-to-action time", "Dashboard freshness"]
+    },
+    {
+      "id": "claude-code",
+      "name": "Claude Code Engineering",
+      "platform": "Claude Code",
+      "emoji": "🛠️",
+      "color": "#D97757",
+      "mission": "Build and maintain the tools the business runs on, starting with this Lead Tracker.",
+      "reportsTo": "ceo",
+      "duties": [
+        "Build and maintain the Lead Tracker and any internal tools",
+        "Integrate systems: CRM, Gmail, Google Calendar, MLS exports, Zapier",
+        "Automate repetitive workflows requested by department heads",
+        "Keep the org structure, agent charters, and pipeline rules in code so they stay in sync",
+        "Provide Argus with clean data feeds and event hooks"
+      ],
+      "inputs": ["Feature requests from the CEO and department heads", "Bug reports", "Integration needs"],
+      "outputs": ["Working software", "Automations", "Data feeds", "Documentation"],
+      "kpis": ["Requests shipped per week", "Open bugs", "Automation hours saved"]
+    }
+  ],
+  "departments": [
+    {
+      "id": "operations",
+      "name": "Operations",
+      "head": "COO",
+      "emoji": "📋",
+      "color": "#AF52DE",
+      "mission": "Take every accepted client from first appointment to closed file without a missed deadline or a compliance miss.",
+      "agents": [
+        {
+          "id": "transaction-manager",
+          "name": "Transaction Manager",
+          "mission": "Run every under-contract deal from executed agreement to closing day.",
+          "duties": [
+            "Open a file for every executed purchase agreement and build its deadline calendar",
+            "Track inspection, financing, appraisal, title, and closing deadlines and confirm each is met",
+            "Coordinate lender, title company, inspector, and the other agent",
+            "Draft status updates for the client and the other side for Nick's approval",
+            "Flag any deadline at risk at least 48 hours ahead to Argus and the COO"
+          ],
+          "inputs": ["Executed contracts", "Lender and title updates", "Inspection reports"],
+          "outputs": ["Deadline calendar", "Client status drafts", "Closing checklist"],
+          "kpis": ["Deadlines missed (target: 0)", "Days from contract to close", "Deals that fall through"],
+          "ownsStatuses": ["Under Contract"],
+          "escalatesTo": "COO"
+        },
+        {
+          "id": "buyer-manager",
+          "name": "Buyer Manager",
+          "mission": "Move active buyers from consultation to accepted offer.",
+          "duties": [
+            "Maintain each active buyer's criteria, pre-approval status, and must-haves",
+            "Build showing lists and route showing days for Nick",
+            "Prepare showing prep cards and buyer presentation cards",
+            "Draft offer strategy with comps from Cenla Intelligence",
+            "Hand the file to the Transaction Manager the moment an offer is accepted"
+          ],
+          "inputs": ["Qualified buyer leads", "MLS listings", "Comp reports"],
+          "outputs": ["Showing schedules", "Prep cards", "Offer strategy drafts"],
+          "kpis": ["Showings per accepted offer", "Days from first showing to contract", "Active buyers with no activity in 7 days (target: 0)"],
+          "ownsStatuses": ["Active Buyer"],
+          "escalatesTo": "COO"
+        },
+        {
+          "id": "listing-manager",
+          "name": "Listing Manager",
+          "mission": "Take every listing from signed agreement to accepted offer.",
+          "duties": [
+            "Prepare the listing appointment package: comps, pricing tiers, net sheet",
+            "Track listing paperwork, photos, MLS entry, and sign placement",
+            "Order marketing from CMO / Marketing and confirm it ships",
+            "Track showings and feedback and draft weekly seller updates",
+            "Recommend price adjustments with appraiser-grade reasoning"
+          ],
+          "inputs": ["Seller leads", "Comp reports", "Showing feedback"],
+          "outputs": ["Listing package", "Seller update drafts", "Price adjustment recommendations"],
+          "kpis": ["Days on market vs. area average", "List-to-sale price ratio", "Weekly seller updates sent on time"],
+          "ownsStatuses": ["Active Seller"],
+          "escalatesTo": "COO"
+        },
+        {
+          "id": "contract-agent",
+          "name": "Contract Agent",
+          "mission": "Prepare accurate, complete contract documents for Nick's review and signature.",
+          "duties": [
+            "Prepare purchase agreements, counters, addenda, extensions, and amendments as drafts",
+            "Check every draft for missing fields, wrong dates, and math errors",
+            "Track signature status on every open document and flag stuck signatures",
+            "Keep a clause library of approved language",
+            "Never send or sign anything; every document goes to Nick first"
+          ],
+          "inputs": ["Deal terms from Buyer / Listing Manager", "Form templates"],
+          "outputs": ["Contract drafts", "Signature status report"],
+          "kpis": ["Drafts returned for correction", "Turnaround time on a draft", "Signatures stuck more than 24h"],
+          "escalatesTo": "COO"
+        },
+        {
+          "id": "compliance-agent",
+          "name": "Compliance Agent",
+          "mission": "Keep every file, message, and ad inside LREC, NAR, and Fair Housing rules.",
+          "duties": [
+            "Audit each transaction file for required disclosures and signatures",
+            "Review client-facing drafts for Fair Housing and advertising rule issues before Nick sees them",
+            "Verify every marketing piece carries the required brokerage identification",
+            "Maintain the banned-phrase list and the compliance checklist",
+            "Prepare files for brokerage submission and record what was submitted"
+          ],
+          "inputs": ["Transaction files", "Marketing drafts", "Client communication drafts"],
+          "outputs": ["Compliance checklist per file", "Flagged issues", "Brokerage submission record"],
+          "kpis": ["Files rejected by brokerage (target: 0)", "Issues caught before send", "Audit turnaround"],
+          "escalatesTo": "COO"
+        }
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "head": "CGO",
+      "emoji": "🚀",
+      "color": "#34C759",
+      "mission": "Turn every inquiry into a qualified appointment and never let a lead go cold.",
+      "agents": [
+        {
+          "id": "lead-manager",
+          "name": "Lead Manager",
+          "mission": "Capture every new lead, log it correctly, and get it to the right agent within the hour.",
+          "duties": [
+            "Log every inbound lead with source, type, and contact details in the Lead Tracker",
+            "Trigger the first-touch response within one hour of the lead arriving",
+            "Deduplicate and clean lead records",
+            "Assign each lead to the Qualification Agent",
+            "Report lead volume by source to CGO and CFO / BI weekly"
+          ],
+          "inputs": ["Portal leads", "Website forms", "Social messages", "Referrals", "Open house sign-ins"],
+          "outputs": ["Clean lead record", "First-touch draft", "Weekly lead volume report"],
+          "kpis": ["Speed to first touch (target: under 1 hour)", "Leads with missing data", "Leads per source per week"],
+          "ownsStatuses": ["New Lead"],
+          "escalatesTo": "CGO"
+        },
+        {
+          "id": "qualification-agent",
+          "name": "Qualification Agent",
+          "mission": "Find out if a lead is ready, willing, and able, and route them accordingly.",
+          "duties": [
+            "Draft discovery questions: timeline, motivation, budget, financing, area, must-haves",
+            "Score each lead on timeline, motivation, and financial readiness",
+            "Route ready leads to appointment setting, warm leads to Nurture, and cold leads to long-term follow-up",
+            "Record qualification notes on the lead record",
+            "Flag high-value or time-sensitive leads to Nick immediately"
+          ],
+          "inputs": ["New leads from Lead Manager", "Lead responses"],
+          "outputs": ["Lead score", "Qualification notes", "Routing decision"],
+          "kpis": ["Leads qualified within 48h", "Qualified-to-appointment rate", "Misrouted leads"],
+          "ownsStatuses": ["Contacted"],
+          "escalatesTo": "CGO"
+        },
+        {
+          "id": "follow-up-agent",
+          "name": "Follow-Up Agent",
+          "mission": "Own the follow-up calendar so no promised call, text, or email is ever missed.",
+          "duties": [
+            "Schedule every follow-up and keep the Next Follow-Up date current on each lead",
+            "Draft follow-up messages in Nick's voice using the approved templates",
+            "Confirm appointments 24 hours ahead and prep Nick with a one-paragraph summary",
+            "Escalate any lead overdue by more than 2 days",
+            "Hand appointment-set leads to the Buyer or Listing Manager after the appointment"
+          ],
+          "inputs": ["Lead records with follow-up dates", "Email templates"],
+          "outputs": ["Follow-up drafts", "Appointment confirmations", "Overdue list"],
+          "kpis": ["Overdue follow-ups (target: 0)", "Appointment no-show rate", "Follow-ups completed per day"],
+          "ownsStatuses": ["Appt Set"],
+          "escalatesTo": "CGO"
+        },
+        {
+          "id": "nurture-agent",
+          "name": "Nurture Agent",
+          "mission": "Keep warm leads engaged with useful, well-timed touches until they are ready.",
+          "duties": [
+            "Run the long-term drip plan: market updates, new listings, milestone check-ins",
+            "Personalize touches from the lead's area, budget, and notes",
+            "Watch for buying signals and hand the lead back to Qualification when they appear",
+            "Draft past-client touches to drive referrals and repeat business",
+            "Prune the nurture list of leads that are truly dead"
+          ],
+          "inputs": ["Nurturing leads", "Market updates from Cenla Intelligence", "New listings"],
+          "outputs": ["Drip drafts", "Re-activation flags", "Referral requests"],
+          "kpis": ["Nurture leads re-activated per month", "Touches per lead per month", "Referrals from past clients"],
+          "ownsStatuses": ["Nurturing"],
+          "escalatesTo": "CGO"
+        },
+        {
+          "id": "opportunity-hunter",
+          "name": "Opportunity Hunter",
+          "mission": "Find business that has not walked in the door yet.",
+          "duties": [
+            "Scan expireds, withdrawns, FSBOs, and probate or estate signals in the Cenla market",
+            "Re-engage dead leads at 90 days with a fresh angle",
+            "Identify investor and relocation opportunities from Cenla Intelligence research",
+            "Draft outreach for each opportunity for Nick's approval",
+            "Track which opportunity sources turn into appointments"
+          ],
+          "inputs": ["MLS status changes", "Public records", "Dead leads", "Market research"],
+          "outputs": ["Opportunity list", "Outreach drafts", "Source performance report"],
+          "kpis": ["Opportunities surfaced per week", "Opportunity-to-appointment rate", "Dead leads revived"],
+          "ownsStatuses": ["Dead"],
+          "escalatesTo": "CGO"
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing",
+      "head": "CMO",
+      "emoji": "📣",
+      "color": "#FF2D55",
+      "mission": "Make every listing and every milestone visible, on brand, and compliant.",
+      "agents": [
+        {
+          "id": "listing-content",
+          "name": "Listing Content",
+          "mission": "Produce the written and visual content for every listing and milestone.",
+          "duties": [
+            "Write MLS descriptions, feature sheets, and listing captions",
+            "Produce branded graphics for coming soon, just listed, open house, price change, under contract, and sold",
+            "Build the buyer milestone graphics for closings",
+            "Keep a content calendar for each active listing",
+            "Route every piece through Brand Compliance before it goes to Nick"
+          ],
+          "inputs": ["Listing data from Listing Manager", "Photos", "Brand kit"],
+          "outputs": ["Listing copy", "Graphics in feed, story, and cover sizes"],
+          "kpis": ["Content ready within 24h of listing", "Pieces returned by Brand Compliance"],
+          "escalatesTo": "CMO"
+        },
+        {
+          "id": "social-media",
+          "name": "Social Media",
+          "mission": "Keep Nick's Facebook and Instagram active with posts that generate conversations.",
+          "duties": [
+            "Draft posts for Facebook feed, Facebook groups, and Instagram from listing content",
+            "Schedule a consistent weekly cadence of listing, market, and personal-brand posts",
+            "Draft replies to comments and DMs and hand inquiries to the Lead Manager",
+            "Report reach, engagement, and inbound messages weekly",
+            "Test hooks and formats and keep what works"
+          ],
+          "inputs": ["Listing content", "Market updates", "Brand rules"],
+          "outputs": ["Post drafts with hashtags", "Weekly social report", "Inbound leads to Lead Manager"],
+          "kpis": ["Posts per week", "Inbound messages per week", "Leads sourced from social"],
+          "escalatesTo": "CMO"
+        },
+        {
+          "id": "marketplace",
+          "name": "Marketplace",
+          "mission": "Get every listing in front of Facebook Marketplace buyers with a compliant, complete post.",
+          "duties": [
+            "Draft Marketplace listings with required disclosures and brokerage identification",
+            "Refresh posts on a schedule so listings stay near the top",
+            "Draft replies to Marketplace inquiries and route them to the Lead Manager",
+            "Track which listings pull the most Marketplace inquiries"
+          ],
+          "inputs": ["Listing content", "Photos"],
+          "outputs": ["Marketplace post drafts", "Inquiry log"],
+          "kpis": ["Inquiries per listing", "Marketplace leads that reach appointment"],
+          "escalatesTo": "CMO"
+        },
+        {
+          "id": "brand-compliance",
+          "name": "Brand Compliance",
+          "mission": "Every piece of marketing sounds like Nick, looks like the brand, and passes LREC, NAR, and Fair Housing review.",
+          "duties": [
+            "Check every draft against the voice rules and banned-phrase list",
+            "Verify brokerage name, REALTOR® usage, and required disclosures are present",
+            "Screen for Fair Housing language issues in every listing and post",
+            "Enforce the brand kit: colors, fonts, logo placement",
+            "Return drafts with specific corrections, not vague notes"
+          ],
+          "inputs": ["All marketing drafts"],
+          "outputs": ["Approved or corrected drafts", "Compliance log"],
+          "kpis": ["Drafts approved on first pass", "Compliance issues that reached Nick (target: 0)"],
+          "escalatesTo": "CMO"
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finance and Business Intelligence",
+      "head": "CFO",
+      "emoji": "📊",
+      "color": "#007AFF",
+      "mission": "Know exactly where the money comes from, where it goes, and where it is heading.",
+      "agents": [
+        {
+          "id": "commission-tracker",
+          "name": "Commission Tracker",
+          "mission": "Track every dollar of commission from contract to disbursement.",
+          "duties": [
+            "Record expected commission on each deal when it goes under contract",
+            "Reconcile closing statements against expected commission",
+            "Track brokerage splits, caps, and referral fees",
+            "Maintain the year-to-date GCI and closed-volume figures",
+            "Flag any deal where the disbursement is late or does not match"
+          ],
+          "inputs": ["Contract terms", "Closing statements", "Brokerage split schedule"],
+          "outputs": ["Commission ledger", "YTD GCI report", "Discrepancy flags"],
+          "kpis": ["Commission discrepancies", "Days from closing to disbursement", "YTD GCI vs. goal"],
+          "ownsStatuses": ["Closed"],
+          "escalatesTo": "CFO"
+        },
+        {
+          "id": "expense-analyst",
+          "name": "Expense Analyst",
+          "mission": "Categorize every business expense and show what it is buying.",
+          "duties": [
+            "Categorize expenses: marketing, lead sources, dues, mileage, tools, brokerage fees",
+            "Track subscriptions and flag anything unused",
+            "Prepare monthly profit and loss for the CFO",
+            "Keep tax-ready records and a mileage log summary",
+            "Recommend cuts or reallocations with evidence"
+          ],
+          "inputs": ["Bank and card transactions", "Receipts", "Subscription list"],
+          "outputs": ["Monthly P&L", "Expense report by category", "Cut recommendations"],
+          "kpis": ["Net margin", "Uncategorized transactions (target: 0)", "Monthly close delivered by the 5th"],
+          "escalatesTo": "CFO"
+        },
+        {
+          "id": "lead-roi",
+          "name": "Lead ROI",
+          "mission": "Show the true cost and return of every lead source.",
+          "duties": [
+            "Match lead-source spend to leads, appointments, contracts, and closings",
+            "Compute cost per lead, cost per appointment, and cost per closing by source",
+            "Rank sources by return and flag sources to cut or scale",
+            "Report monthly to the CFO and CGO",
+            "Feed source performance into Forecasting"
+          ],
+          "inputs": ["Lead Tracker data", "Expense data by source", "Closing data"],
+          "outputs": ["Source ROI report", "Scale or cut recommendations"],
+          "kpis": ["Cost per closing by source", "Sources with negative return"],
+          "escalatesTo": "CFO"
+        },
+        {
+          "id": "forecasting",
+          "name": "Forecasting",
+          "mission": "Predict next quarter's closings and income so Nick can plan ahead.",
+          "duties": [
+            "Project closings and GCI from pipeline stage, conversion rates, and seasonality",
+            "Maintain the goal tracker: closings and GCI vs. annual goal",
+            "Model scenarios: more lead spend, price shifts, rate changes",
+            "Warn early when the pipeline will not support the goal",
+            "Deliver the forecast section of the weekly scorecard"
+          ],
+          "inputs": ["Pipeline data", "Historical conversion rates", "Market research"],
+          "outputs": ["90-day forecast", "Goal tracker", "Scenario models"],
+          "kpis": ["Forecast accuracy", "Weeks of early warning before a shortfall"],
+          "escalatesTo": "CFO"
+        }
+      ]
+    },
+    {
+      "id": "intelligence",
+      "name": "Cenla Intelligence",
+      "head": "Director of Intelligence",
+      "emoji": "🔎",
+      "color": "#5856D6",
+      "mission": "Make Nick the most informed agent in Central Louisiana.",
+      "agents": [
+        {
+          "id": "market-research",
+          "name": "Market Research",
+          "mission": "Track the Cenla market so pricing and advice are grounded in current data.",
+          "duties": [
+            "Produce a monthly market snapshot by parish and price band: inventory, days on market, absorption, price trends",
+            "Track school zone, flood zone, and USDA eligibility changes",
+            "Monitor local news that affects housing: employers, developments, infrastructure",
+            "Supply market updates to Nurture and Social Media",
+            "Answer ad hoc market questions from any department"
+          ],
+          "inputs": ["MLS statistics", "Public data", "Local news"],
+          "outputs": ["Monthly market snapshot", "Market update blurbs", "Ad hoc briefs"],
+          "kpis": ["Snapshot delivered by the 3rd of each month", "Ad hoc briefs turned around in 24h"],
+          "escalatesTo": "Director of Intelligence"
+        },
+        {
+          "id": "mls-intelligence",
+          "name": "MLS Intelligence",
+          "mission": "Turn MLS data into comps, pricing tiers, and property-level insight.",
+          "duties": [
+            "Run comps with top-producer geography rules and mobile-vs-mobile logic",
+            "Produce pricing tiers and weighted price anchors for listings and offers",
+            "Watch status changes: new, price drop, expired, withdrawn, back on market",
+            "Prepare property analysis for showing prep and listing appointments",
+            "Support Opportunity Hunter with expired and withdrawn feeds"
+          ],
+          "inputs": ["MLS access", "Property addresses from Buyer / Listing Manager"],
+          "outputs": ["Comp reports", "Pricing strategy", "Status change feed"],
+          "kpis": ["Comp report turnaround", "Appraisal gaps on deals priced with our comps"],
+          "escalatesTo": "Director of Intelligence"
+        },
+        {
+          "id": "financing-research",
+          "name": "Financing Research",
+          "mission": "Know every loan program and rate move that affects Cenla buyers.",
+          "duties": [
+            "Track conventional, FHA, VA, USDA, and Rural Development program changes",
+            "Maintain a current rate sheet and payment estimate assumptions",
+            "Maintain a preferred lender list with turn times and strengths",
+            "Produce payment estimates for buyer presentation cards",
+            "Brief the Buyer Manager on financing options for each active buyer"
+          ],
+          "inputs": ["Lender updates", "Program guidelines", "Rate data"],
+          "outputs": ["Rate sheet", "Program guide", "Payment estimates", "Lender list"],
+          "kpis": ["Rate sheet updated weekly", "Deals lost to financing surprises (target: 0)"],
+          "escalatesTo": "Director of Intelligence"
+        },
+        {
+          "id": "competitor-research",
+          "name": "Competitor Research",
+          "mission": "Know what other Cenla agents and teams are doing and where Nick can win.",
+          "duties": [
+            "Track top agents' listing volume, pricing patterns, and marketing",
+            "Monitor competitor social content and offers",
+            "Identify underserved areas, price bands, and client types",
+            "Report quarterly on positioning opportunities",
+            "Feed insights to CMO / Marketing and CGO / Growth"
+          ],
+          "inputs": ["MLS agent data", "Social media", "Public marketing"],
+          "outputs": ["Quarterly competitor report", "Positioning recommendations"],
+          "kpis": ["Report delivered quarterly", "Recommendations adopted"],
+          "escalatesTo": "Director of Intelligence"
+        },
+        {
+          "id": "investment-analysis",
+          "name": "Investment Analysis",
+          "mission": "Give investor clients numbers they can act on.",
+          "duties": [
+            "Run cash flow, cap rate, and cash-on-cash analysis on candidate properties",
+            "Estimate rent from local rental data",
+            "Model rehab, flip, and hold scenarios",
+            "Screen the MLS for investor-grade opportunities weekly",
+            "Prepare investor presentation cards for the Buyer Manager"
+          ],
+          "inputs": ["MLS data", "Rental data", "Investor client criteria"],
+          "outputs": ["Deal analysis", "Weekly investor opportunity list", "Investor cards"],
+          "kpis": ["Analyses delivered within 24h", "Investor deals closed"],
+          "escalatesTo": "Director of Intelligence"
+        }
+      ]
+    }
+  ],
+  "pipelineOwnership": {
+    "New Lead": "lead-manager",
+    "Contacted": "qualification-agent",
+    "Nurturing": "nurture-agent",
+    "Appt Set": "follow-up-agent",
+    "Active Buyer": "buyer-manager",
+    "Active Seller": "listing-manager",
+    "Under Contract": "transaction-manager",
+    "Closed": "commission-tracker",
+    "Dead": "opportunity-hunter"
+  },
+  "handoffs": [
+    { "from": "lead-manager", "to": "qualification-agent", "when": "Lead is logged and first touch is drafted" },
+    { "from": "qualification-agent", "to": "follow-up-agent", "when": "Lead is ready and an appointment is set" },
+    { "from": "qualification-agent", "to": "nurture-agent", "when": "Lead is warm but not ready (timeline over 90 days)" },
+    { "from": "nurture-agent", "to": "qualification-agent", "when": "A buying or selling signal appears" },
+    { "from": "follow-up-agent", "to": "buyer-manager", "when": "Buyer consultation is complete" },
+    { "from": "follow-up-agent", "to": "listing-manager", "when": "Listing agreement is signed" },
+    { "from": "buyer-manager", "to": "contract-agent", "when": "Buyer is ready to write an offer" },
+    { "from": "listing-manager", "to": "contract-agent", "when": "An offer arrives on a listing" },
+    { "from": "contract-agent", "to": "transaction-manager", "when": "Agreement is fully executed" },
+    { "from": "transaction-manager", "to": "compliance-agent", "when": "File is ready for brokerage submission" },
+    { "from": "transaction-manager", "to": "commission-tracker", "when": "Deal closes" },
+    { "from": "commission-tracker", "to": "nurture-agent", "when": "Deal closes, for past-client and referral touches" },
+    { "from": "opportunity-hunter", "to": "lead-manager", "when": "An outreach gets a response" },
+    { "from": "listing-manager", "to": "listing-content", "when": "Listing is signed or a milestone changes" },
+    { "from": "social-media", "to": "lead-manager", "when": "A DM or comment is an inquiry" },
+    { "from": "marketplace", "to": "lead-manager", "when": "A Marketplace inquiry arrives" }
+  ],
+  "escalationRules": [
+    "Any agent may escalate to its department head at any time.",
+    "Department heads escalate to the CEO; only the CEO escalates to Nick.",
+    "Anything that touches a client, a contract, or money is a Nick decision. Agents prepare it, Nick approves it.",
+    "A deadline at risk goes to Argus immediately, not through the chain.",
+    "A compliance question stops the work until the Compliance Agent or Brand Compliance clears it."
+  ],
+  "cadence": [
+    { "name": "Daily brief", "owner": "ceo", "when": "Every morning", "contains": "Follow-ups due, deadlines this week, stuck items, decisions needed from Nick" },
+    { "name": "Weekly scorecard", "owner": "ceo", "when": "Monday", "contains": "Leads by source, pipeline by stage, closings, GCI vs. goal, forecast, top risks" },
+    { "name": "Monthly close", "owner": "finance", "when": "By the 5th", "contains": "P&L, commission ledger, lead ROI by source" },
+    { "name": "Market snapshot", "owner": "intelligence", "when": "By the 3rd", "contains": "Inventory, days on market, absorption, price trends by parish" },
+    { "name": "Quarterly review", "owner": "nick", "when": "First week of the quarter", "contains": "Goals vs. actual, competitor report, what to scale or cut" }
+  ]
+}
